@@ -1,0 +1,50 @@
+syntax = "proto3"; // 声明了protobuf的版本 
+
+package fixbug; // 声明了代码所在的包（对于C++来说，就是namespace命名空间）
+
+option cc_generic_services = true; //表示生成service服务类和rpc方法描述，默认不生成
+
+message ResultCode {
+    int32 errcode = 1; // 声明一个字段，字段类型是int32，字段名是errcode，字段编号是1
+    bytes errmsg = 2; // 声明一个字段，字段类型是string，字段名是errmsg，字段编号是2
+}
+
+// 数据 、 列表repeated、 映射表map
+// 定义登录消息类型 name pwd，【string类型一般都定义为bytes，提升效率
+message LoginRequest {
+    bytes name = 1; // 声明一个字段，字段类型是string，字段名是name，字段编号是1
+    bytes pwd = 2; // 声明一个字段，字段类型是string，字段名是pwd，字段编号是2
+    // map<int32, string> test = 3; // 声明一个字段，字段类型是map<int32, string>，字段名是test，字段编号是3
+}
+
+// 定义登录响应消息类型
+message LoginResponse {
+    ResultCode result = 1; // 声明一个字段，字段类型是ResultCode，字段名是result，字段编号是1
+    bool success = 2; // 声明一个字段，字段类型是bool，字段名是success，字段编号是3
+}
+
+message GetFriendListsRequest {
+    uint32 userid = 1;
+}
+
+message User {
+    bytes name = 1;
+    uint32 age = 2;
+    enum Sex{
+        MAN = 0;
+        WOMAN = 1;
+    }
+    Sex sex = 3;
+}
+message GetFriendListsResponse {
+    ResultCode result = 1;
+    repeated User friend_list = 2; // 定义一个列表类型：声明一个字段，字段类型是repeated User，字段名是friend_list，字段编号是2
+}
+
+
+// 在protobuf里面怎么定义描述rpc方法的类型？-> 定义一个service
+// protobuf不支持RPC，只是对RPC方法的描述
+service UserServiceRpc {
+    rpc Login(LoginRequest) returns (LoginResponse); // 声明一个RPC方法，方法名是Login，参数类型是LoginRequest，返回值类型是LoginResponse
+    rpc GetFriendLists(GetFriendListsRequest) returns (GetFriendListsResponse); // 声明一个RPC方法，方法名是GetFriendLists，参数类型是GetFriendListsRequest，返回值类型是GetFriendListsResponse
+}

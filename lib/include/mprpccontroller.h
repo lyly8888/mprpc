@@ -1,0 +1,29 @@
+#ifndef MPRPCCONTROLLER_H
+#define MPRPCCONTROLLER_H
+
+#include <google/protobuf/service.h>
+#include <string>
+
+using namespace std;
+
+class MprpcController : public google::protobuf::RpcController {
+    
+public:
+    MprpcController();
+    void Reset();
+    bool Failed() const;
+    string ErrorText() const;
+    void SetFailed(const string& reason);
+
+    // 目前未实现具体的功能
+    void StartCancel();
+    bool IsCanceled() const;
+    void NotifyOnCancel(google::protobuf::Closure* callback);
+
+private:
+    bool m_failed; // RPC方法执行过程中的状态
+    string m_errorText; // RPC方法执行过程中的错误信息
+
+};
+
+#endif // MPRPCCONTROLLER_H
